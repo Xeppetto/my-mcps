@@ -89,6 +89,11 @@ Atlassian Confluence와 상호작용하기 위한 Model Context Protocol (MCP) �
 - 버전 정보
 - 댓글 목록 (작성자, 작성일, 내용)
 
+## 요구사항
+
+- **Node.js**: 18.0.0 이상
+- **npm**: 8.0.0 이상
+
 ## 설정
 
 다음 환경 변수가 필요합니다:
