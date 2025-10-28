@@ -10,8 +10,6 @@ Atlassian Confluence와 상호작용하기 위한 MCP 서버입니다.
 
 **주요 기능:** 팀 문서화 현황 파악, 지식베이스 활용도 분석, 협업 활동 추적
 
-[상세 문서 보기 →](./mcp-confluence-server/README.md)
-
 ---
 
 ### 2. [Jira MCP Server](./mcp-jira-server)
@@ -20,8 +18,6 @@ Atlassian Jira와 상호작용하기 위한 MCP 서버입니다.
 
 **주요 기능:** 프로젝트 진행 상황 파악, 팀원 업무 추적, 이슈 관리 자동화
 
-[상세 문서 보기 →](./mcp-jira-server/README.md)
-
 ---
 
 ### 3. [Playwright MCP Server](./mcp-playwright-server)
@@ -29,8 +25,6 @@ Atlassian Jira와 상호작용하기 위한 MCP 서버입니다.
 Playwright를 사용한 브라우저 자동화 MCP 서버입니다.
 
 **주요 기능:** 웹 스크래핑, 자동화된 테스트, 웹 애플리케이션 모니터링
-
-[상세 문서 보기 →](./mcp-playwright-server/README.md)
 
 ---
 
