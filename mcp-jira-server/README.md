@@ -2,7 +2,7 @@
 
 AI 도구에 MCP로 연동하는 Atlassian Jira 서버입니다.
 
-MCP를 이용하면 AI 도구에서 LLM이 이해할 수 있는 방식으로 인간의 언어(자연어)로 입력하면 AI 도구가 자동으로 JQL을 생성하여 Jira에 질의 후 답변을 가져와 보여주게 됩니다. Atlassian은 다양한 [Jira API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)를 제공하지만, 사용자는 자연어로만 입력하여 정보를 가져올 수 있습니다.
+MCP를 이용하면 AI 도구에서 LLM이 이해할 수 있는 방식으로 인간의 언어(자연어)로 입력하면 AI 도구가 자동으로 JQL을 생성하여 Jira에 질의 후 답변을 가져와 보여주게 됩니다. Atlassian은 다양한 [Jira API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)를 제공하지만, 비개발자들이 사용하기에는 복잡합니다. MCP를 활용하면 사용자는 자연어로만 입력하여 정보를 가져올 수 있습니다.
 
 <br>
 
