@@ -100,7 +100,7 @@ AI 도구에 MCP로 연동하는 Playwright입니다.
 
 ## Playwright MCP의 주요 기능
 
-이 MCP 서버는 Playwright를 통해 다음 기능들을 제공합니다.
+Playwright MCP 서버는 다음 기능들을 제공합니다. 아래는 개발자들을 위한 정보이므로, 상세한 API 별 파라미터들의 사용 사례에 대해 알고 싶으신 경우 확인해 주세요.
 
 #### 1. `launch_browser`
 

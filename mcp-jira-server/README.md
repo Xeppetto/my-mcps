@@ -1,96 +1,156 @@
 # Jira MCP Server
 
-Atlassian Jira와 상호작용하기 위한 Model Context Protocol (MCP) 서버입니다.
+AI 도구에 MCP로 연동하는 Atlassian Jira 서버입니다.
 
-## 기능
+MCP를 이용하면 AI 도구에서 LLM이 이해할 수 있는 방식으로 인간의 언어(자연어)로 입력하면 AI 도구가 자동으로 JQL을 생성하여 Jira에 질의 후 답변을 가져와 보여주게 됩니다. Atlassian은 다양한 [Jira API](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)를 제공하지만, 사용자는 자연어로만 입력하여 정보를 가져올 수 있습니다.
 
-이 MCP 서버는 Jira API를 통해 다음 기능들을 제공합니다:
+<br>
 
-### 1. 사용자 이슈 조회 (`get_user_issues`)
-특정 사용자가 생성한 이슈를 조회합니다.
+## 활용 방법
 
-**파라미터:**
+1. 계획 수립하기
+
+   > 내 아이디는 {email}이에요. 오늘 처리해야 할 이슈들, 혹은 긴급한 이슈들을 우선순위 순으로 보여주세요.
+
+   > 내가 생성하였는데 아직 처리 되지 않은 이슈 목록을 알려주세요.
+
+   > 이번 주 {email}이 해결해야 하는 이슈들을 우선순위 순으로 보여주세요.
+
+   > 오늘 우리 팀({email1}, {email2}, {email3})이 한 모든 활동을 요약해서 일일 보고서 형식으로 만들어주세요. (1) 완료한 이슈, (2) 새로 생성된 이슈, (3) 진행 중인 주요 작업, (4) 내일 할 일
+
+2. 팀의 주간 활동 결과 보고
+
+   > 우리 팀({email1}, {email2}, {email3}) 세 명의 이번 주 활동을 확인하고, 테이블로 만들어주세요.
+
+   > 지난 주와 이번 주 우리 팀({email1}, {email2}, {email3})이 생성, 수정, 완료 등 수행 활동을 정리해 주세요. 그리고, 그 중 정리되지 않은 이슈의 목록은 따로 만들어서 보여주세요.
+
+3. 이슈 트렌드 분석
+
+   > {Jira Project 이름} 프로젝트에서 최근 60일간 고객으로부터 보고된 후 생성된 버그들을 분석해주세요. 해당 버그들을 유형별, 심각도별로 분류하고 특정 패턴이 있는지 확인해 주세요."
+
+   > {Jira-1234}, {Jira-2345}, {Jira-3456} 이슈들에서 발생한 모든 정보를 정리해주세요. 댓글, 히스토리, 연관 이슈 모두 포함해서 알려주고, 해당 이슈의 논의에 참여하고 있는 참여자 목록을 알려주세요.
+
+4. 성과 분석 및 요약
+
+   > 현재 진행 중인 스프린트에서 완료율은 얼마고, 마감일까지 완료 가능한지 예측해주세요.
+
+   > 내가 이번 분기(7월~9월) 동안 완료한 모든 이슈를 유형별로 정리하고, 주요 성과를 요약해주세요.
+
+5. 프로젝트 내 패턴 확인
+
+   > 지난 3개월간 생성된 이슈들 중에서 비슷한 제목이나 내용을 가진 것들을 그룹핑해서 알려주세요. 자주 발생하는 버그가 있는지, 혹은 반복 작업이 있는지 확인하고 싶어요.
+
+   > {Jira 프로젝트}에 참여한 팀원들의 현재 진행 중인 이슈 수를 비교하고, 업무 부하가 불균형한지 확인하고 싶어요. 각 개인 별로 진행 중인 이슈의 수를 확인해 주세요. 각 개인 별로 최근 30일간 완료한 이슈의 수도 확인해 주세요.
+
+<br>
+
+## Jira MCP 주요 기능
+
+Jira MCP 서버는 Jira API를 통해 다음 기능들을 제공합니다. 아래는 개발자들을 위한 정보이므로, 상세한 API 별 파라미터들의 사용 사례에 대해 알고 싶으신 경우 확인해 주세요.
+
+#### 1. `get_user_issues`
+
+**(1) 개요 :** 특정 사용자가 생성한 이슈를 조회합니다.
+
+**(2) 파라미터:**
+
 - `username` (필수): Jira 사용자명 또는 이메일
 - `days` (선택): 조회할 일수 (기본값: 7일)
 
-**반환 정보:**
+**(3) 반환 정보:**
+
 - 이슈 키, 제목, 상태
 - 우선순위, 이슈 유형
 - 담당자, 보고자
 - 생성일
 
-**사용 사례:**
+**(4) 사용 사례:**
+
 - 특정 팀원이 최근에 생성한 이슈 파악
 - 사용자별 업무 활동 추적
 - 보고서 작성을 위한 데이터 수집
 
-### 2. 사용자 댓글 활동 조회 (`get_user_comments`)
-특정 사용자가 댓글을 단 이슈들을 조회합니다.
+#### 2. `get_user_comments`
 
-**파라미터:**
+**(1) 개요 :** 특정 사용자가 댓글을 단 이슈들을 조회합니다.
+
+**(2) 파라미터:**
+
 - `username` (필수): Jira 사용자명 또는 이메일
 - `days` (선택): 조회할 일수 (기본값: 7일)
 
-**반환 정보:**
+**(3) 반환 정보:**
+
 - 댓글을 단 이슈 목록
 - 각 이슈의 상태
 - 댓글 내용 및 작성 시간
 - 총 댓글 수 및 이슈 수
 
-**사용 사례:**
+**(4) 사용 사례:**
+
 - 팀원의 협업 활동 모니터링
 - 이슈 논의 참여도 확인
 - 커뮤니케이션 패턴 분석
 
-### 3. 이슈 댓글 상세 조회 (`get_issue_comments`)
-특정 이슈의 모든 댓글을 상세히 조회합니다.
+#### 3. `get_issue_comments`
 
-**파라미터:**
+**(1) 개요 :** 특정 이슈의 모든 댓글을 상세히 조회합니다.
+
+**(2) 파라미터:**
+
 - `issueKey` (필수): 이슈 키 (예: PROJ-123)
 - `username` (선택): 특정 사용자의 댓글만 필터링
 
-**반환 정보:**
+**(3) 반환 정보:**
+
 - 댓글 작성자 및 이메일
 - 댓글 작성/수정 시간
 - 댓글 전체 내용
 - 댓글 ID
 
-**사용 사례:**
+**(4) 사용 사례:**
+
 - 이슈 토론 내용 확인
 - 특정 사용자의 의견 추출
 - 이슈 해결 과정 추적
 
-### 4. JQL 이슈 검색 (`search_issues`)
-JQL (Jira Query Language)을 사용하여 이슈를 검색합니다.
+#### 4. `search_issues`
 
-**파라미터:**
+**(1) 개요 :** JQL (Jira Query Language)을 사용하여 이슈를 검색합니다.
+
+**(2) 파라미터:**
+
 - `jql` (필수): JQL 쿼리 문자열
 - `maxResults` (선택): 최대 결과 개수 (기본값: 50)
 
-**반환 정보:**
+**(3) 반환 정보:**
+
 - 이슈 키, 제목, 상태
 - 우선순위, 담당자
 - 생성일, 수정일
 
-**JQL 예시:**
+**(4) JQL 예시:**
+
 ```
 project = "MYPROJECT" AND status = "In Progress"
 assignee = currentUser() AND created >= -7d
 priority = High AND status != Done
 ```
 
-**사용 사례:**
+**(5) 사용 사례:**
+
 - 복잡한 조건으로 이슈 검색
 - 커스텀 필터 적용
 - 대시보드 데이터 수집
 
-### 5. 이슈 상세 정보 조회 (`get_issue_details`)
-특정 이슈의 모든 상세 정보를 조회합니다.
+#### 5. `get_issue_details`
 
-**파라미터:**
-- `issueKey` (필수): 이슈 키 (예: PROJ-123)
+**(1) 개요 :** 특정 이슈의 모든 상세 정보를 조회합니다.
 
-**반환 정보:**
+**(2) 파라미터:** `issueKey` (필수): 이슈 키 (예: PROJ-123)
+
+**(3) 반환 정보:**
+
 - 제목, 설명
 - 상태, 우선순위, 유형
 - 보고자, 담당자
@@ -98,53 +158,49 @@ priority = High AND status != Done
 - 컴포넌트, 레이블
 - 이슈 링크
 
-**사용 사례:**
+**(4) 사용 사례:**
+
 - 이슈 전체 정보 확인
 - 상태 및 진행 상황 파악
 - 관련 메타데이터 수집
 
-## 요구사항
-
-- **Node.js**: 18.0.0 이상
-- **npm**: 8.0.0 이상
-
-## 설정
-
-다음 환경 변수가 필요합니다:
-
-```bash
-JIRA_URL=https://your-domain.atlassian.net
-JIRA_EMAIL=your-email@example.com
-JIRA_API_TOKEN=your-api-token
-```
-
-## 설치
-
-```bash
-npm install
-```
+<br>
 
 ## 사용 예시
 
-Claude Desktop 또는 다른 MCP 클라이언트의 설정 파일에 추가:
+1. Jira 환경 변수 확인하여 입력
 
-```json
-{
-  "mcpServers": {
-    "jira": {
-      "command": "node",
-      "args": ["/path/to/mcp-jira-server/server.js"],
-      "env": {
-        "JIRA_URL": "https://your-domain.atlassian.net",
-        "JIRA_EMAIL": "your-email@example.com",
-        "JIRA_API_TOKEN": "your-api-token"
-      }
-    }
-  }
-}
-```
+   ```bash
+   JIRA_URL=https://your-domain.atlassian.net
+   JIRA_EMAIL=your-email@example.com
+   JIRA_API_TOKEN=your-api-token
+   ```
 
-## API 토큰 생성
+2. MCP config 설정
+
+   ```json
+   {
+     "mcpServers": {
+       "jira": {
+         "command": "node",
+         "args": ["/path/to/mcp-jira-server/server.js"],
+         "env": {
+           "JIRA_URL": "https://your-domain.atlassian.net",
+           "JIRA_EMAIL": "your-email@example.com",
+           "JIRA_API_TOKEN": "your-api-token"
+         }
+       }
+     }
+   }
+   ```
+
+3. LLM 도구에서 MCP 연동 확인 요청
+
+   > Jira MCP 연동되었는지 확인해 주세요.
+
+<br>
+
+## 참고 : API 토큰 생성
 
 1. Atlassian 계정 설정으로 이동
 2. Security → API tokens
@@ -152,26 +208,11 @@ Claude Desktop 또는 다른 MCP 클라이언트의 설정 파일에 추가:
 4. 토큰 이름 입력 후 생성
 5. 생성된 토큰을 안전하게 보관
 
-## JQL (Jira Query Language) 참고
-
-JQL을 사용하면 강력한 검색이 가능합니다:
-
-- `project = "MYPROJECT"` - 특정 프로젝트
-- `assignee = currentUser()` - 현재 사용자에게 할당됨
-- `status = "In Progress"` - 진행 중 상태
-- `created >= -7d` - 최근 7일 이내 생성
-- `priority = High` - 높은 우선순위
-- `labels = "urgent"` - 특정 레이블
-
-연산자: `AND`, `OR`, `NOT`, `=`, `!=`, `>`, `<`, `>=`, `<=`, `~` (contains)
+<br>
 
 ## 주의사항
 
-- API 토큰은 절대 공개 저장소에 커밋하지 마세요
-- 환경 변수 또는 보안 비밀 관리 도구를 사용하세요
-- Jira API 사용량 제한에 유의하세요
-- 댓글 조회는 권한에 따라 제한될 수 있습니다
-
-## 버전
-
-현재 버전: 0.3.0
+- API 토큰은 절대 공개 저장소에 커밋하지 마세요.
+- 환경 변수 또는 보안 비밀 관리 도구를 사용하세요.
+- Jira API 사용량 제한에 유의하세요.
+- 댓글 조회는 권한에 따라 제한될 수 있습니다.
